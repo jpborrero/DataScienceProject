@@ -4,7 +4,7 @@ import numpy as np
 import json
 import ast
 
-file = '/Users/jpborrero/Desktop/Data Science/Group Project/Data/movies_metadata.csv'  #CHANGE PATH
+file = 'movies_metadata.csv'  #CHANGE PATH
 metadata = pd.read_csv(file, dtype={'budget':str, 'revenue':str, 'runtime':str}, low_memory=False)
 
 
@@ -58,11 +58,11 @@ def clean_movie_data(data):
 
 		try:
 			row['genres'] = genres[0]['name']
-			print genres[0]['name']   #here it changes
+			#print genres[0]['name']   #here it changes
 		except:
 			row['genres'] = 'No genre'
 
-	print data
+	#print data
 	return data
 
 meta = clean_movie_data(metadata)

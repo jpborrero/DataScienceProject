@@ -1,6 +1,4 @@
 
-import features
-
 p = 'pos'
 n = 'neg'
 
