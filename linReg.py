@@ -72,7 +72,7 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, filters):
 	
 	
 
-#list of vars for convenience
+#list of vars
 #,adult,budget,genres,id,original_language,original_title,popularity,production_companies
 #,production_countries,release_date,revenue,runtime,spoken_languages,vote_average,vote_count
 
