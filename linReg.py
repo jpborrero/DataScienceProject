@@ -1,5 +1,3 @@
-import matplotlib
-
 
 #https://pythonspot.com/linear-regression/
 import matplotlib.pyplot as plt
@@ -28,8 +26,7 @@ def newline(p1, p2):
 def scatterPlotTwoFeatures(dataFile, attrX, attrY, filters):
 
 	# load csv with columns
-	file = dataFile
-	df = pd.read_csv(file, usecols=[attrX, attrY])
+	df = pd.read_csv(dataFile, usecols=[attrX, attrY])
 	
 	#apply filters
 	df_f = df
