@@ -2,8 +2,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def makeHisto(dataFile, attrX, filters, ranges):
-	df = pd.read_csv(dataFile, usecols=[attrX])
+def makeHisto(dataFile, attrX, attrOther, filters, ranges):
+	columns = [attrX]
+	for attr in attrOther:
+		columns.append(attr)
+
+	df = pd.read_csv(dataFile, usecols=columns)
 	
 	#apply filters
 	df_f = df
@@ -25,4 +29,4 @@ def makeHisto(dataFile, attrX, filters, ranges):
 #,adult,budget,genres,id,original_language,original_title,popularity,production_companies
 #,production_countries,release_date,revenue,runtime,spoken_languages,vote_average,vote_count
 	
-makeHisto('cleanedData.csv', 'runtime', ['runtime >= 0'], (0,120))
+makeHisto('cleanedData.csv', 'runtime', ['genres'], ['runtime >= 0'], (0,120))

@@ -17,10 +17,15 @@ runtime_c = {'1<>97':{'lower':1.0, 'upper':97.0},
 '97<>1256':{'lower':97.0, 'upper':1256.0}}
 
 
-score_c = {'0.0<>1.0':{'lower':0.0, 'upper':1.0}, '1.0<>2.0':{'lower':1.0, 'upper':2.0}, '2.0<>3.0':{'lower':2.0, 'upper':3.0}, 
+scoring_feature = {'0.0<>1.0':{'lower':0.0, 'upper':1.0}, '1.0<>2.0':{'lower':1.0, 'upper':2.0}, '2.0<>3.0':{'lower':2.0, 'upper':3.0}, 
 '3.0<>4.0':{'lower':3.0, 'upper':4.0}, '4.0<>5.0':{'lower':4.0, 'upper':5.0}, '5.0<>6.0':{'lower':5.0, 'upper':6.0}, 
 '6.0<>7.0':{'lower':6.0, 'upper':7.0}, '7.0<>8.0':{'lower':7.0, 'upper':8.0}, '8.0<>9.0':{'lower':8.0, 'upper':9.0},
-'9.0<>10.0':{'lower':9.0, 'upper':10.0}}
+'9.0<>10.0':{'lower':9.0, 'upper':11.0}}
+
+scoring_label = {'0.0<>1.0':0.0, '1.0<>2.0':0.0, '2.0<>3.0':0.0, 
+'3.0<>4.0':0.0, '4.0<>5.0':0.0, '5.0<>6.0':0.0, 
+'6.0<>7.0':0.0, '7.0<>8.0':0.0, '8.0<>9.0':0.0,
+'9.0<>10.0':0.0}
 
 print('getting data...')
 
@@ -63,63 +68,42 @@ pos_value = 5.0
 neg_value = 5.0
 cont_indexes = ['budget', 'popularity', 'revenue', 'runtime']
 cont_features = {'budget':budget_c, 'popularity':popularity_c, 'revenue':revenue_c, 'runtime':runtime_c}
-#print(train_labels)
-features = trainNB(train_values, train_labels, classifier_index, pos_value, neg_value, cont_indexes, cont_features)
+print(train_labels)
+features = trainNB(train_values, train_labels, classifier_index, scoring_feature, scoring_label, cont_indexes, cont_features)
 
-#print(train_features)
-
-def resultClass(results):
-	if results[0] > results[1]:
-		return 'pos'
+def resultClass(results, scoring_feature, actual):
+	
+	actual_label = ''
+	predicted_label = ''
+	greatest = 0.0
+	for label in scoring_feature:
+		if actual >= scoring_feature[label]['lower'] and actual < scoring_feature[label]['upper']:
+			actual_label = label
+		if results[label] > greatest:
+			predicted_label = label
+			greatest = results[label]
+			
+	if predicted_label == actual_label:
+		return 1
 	else:
-		return 'neg'
+		return 0
 
 correct = 0
 total = len(test_values)
 
 for i in range(0, total):
-	results = classifyNB(features, test_values[i], train_labels, classifier_index, pos_value, neg_value, cont_indexes, cont_features)
-	'''
-	print('finished...')
-	print(train_values[i])
-	print('above five likelyhood', results[0]/(results[0]+results[1]),'below five likelyhood', results[1]/(results[0]+results[1]))
-	print(resultClass(results), float(results[0]))
-	print('class: ', train_values[i][classifier_index])
-	'''
-	if resultClass(results) == 'pos' and float(test_values[i][classifier_index]) > 5.0:
-		correct += 1
-	if resultClass(results) == 'neg' and float(test_values[i][classifier_index]) <= 5.0:
-		correct += 1
+	results = classifyNB(features, test_values[i], train_labels, classifier_index, scoring_feature, scoring_label, cont_indexes, cont_features)
+
+	add = resultClass(results, scoring_feature, float(test_values[i][classifier_index]))
+	
+	correct += add
 print('accuracy:', correct/total)
-'''
-row_num = 16
-counter = 0
-total = 0
-maxy = 0
-miny = 99999999999
 
 
-count = 1
-for row in data_meta:
-
-	if count != 1:
-		#print(row[2])
-		if len(row) > 22:
-			try:
-				if float(row[row_num]) > 0.0:
-					if float(row[row_num]) > maxy:
-						maxy = float(row[row_num])
-					if float(row[row_num]) < miny:
-						miny = float(row[row_num])
-					counter += 1
-					total += float(row[row_num])
-			except (ValueError):
-				print(row)
-	count += 1
 
 
-print('max', maxy)
-print('min', miny)
-print('total', counter)
-print('average', total / counter)
-'''
+
+
+
+
+

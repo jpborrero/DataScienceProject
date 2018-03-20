@@ -23,15 +23,21 @@ def newline(p1, p2):
     return l
 
 #filters apply data filters, reference pandas .query()
-def scatterPlotTwoFeatures(dataFile, attrX, attrY, filters):
+def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
 
 	# load csv with columns
-	df = pd.read_csv(dataFile, usecols=[attrX, attrY])
+	columns = [attrX, attrY]
+	for attr in attrOther:
+		columns.append(attr)
+		
+	df = pd.read_csv(dataFile, usecols=columns)
+	
+
 	
 	#apply filters
 	df_f = df
 	for filter in filters:
-		df_f = df_f.query(filter)	
+		df_f = df_f.query(filter)
 	
 	Y = df_f[attrY]
 	X = df_f[attrX]
@@ -77,7 +83,7 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, filters):
 #scatterPlotTwoFeatures('cleanedData.csv', 'budget', 'revenue', ['budget>0', 'revenue>0'])
 
 #first var is data file, second var is independent var, third var is dependent var, fourth is list of filters
-scatterPlotTwoFeatures('cleanedData.csv', 'vote_count', 'vote_average', ['vote_count >= 0', 'vote_average >= 0'])
+scatterPlotTwoFeatures('cleanedData.csv', 'vote_count', 'vote_average', ['genres'], ['vote_count >= 0', 'vote_average >= 0'])
 
 
 
