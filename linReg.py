@@ -83,7 +83,7 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
 #scatterPlotTwoFeatures('cleanedData.csv', 'budget', 'revenue', ['budget>0', 'revenue>0'])
 
 #first var is data file, second var is independent var, third var is dependent var, fourth is list of filters
-scatterPlotTwoFeatures('cleanedData.csv', 'vote_count', 'vote_average', ['genres'], ['vote_count >= 0', 'vote_average >= 0'])
+scatterPlotTwoFeatures('cleanedData.csv', 'budget', 'revenue', [], ['budget >= 0', 'revenue >= 0'])
 
 
 

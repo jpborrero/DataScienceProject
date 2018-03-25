@@ -1,4 +1,5 @@
 from bayes import *
+import gaussian as gs
 import time
 import csv
 
@@ -22,7 +23,7 @@ scoring_feature = {'0.0<>1.0':{'lower':0.0, 'upper':1.0}, '1.0<>2.0':{'lower':1.
 '6.0<>7.0':{'lower':6.0, 'upper':7.0}, '7.0<>8.0':{'lower':7.0, 'upper':8.0}, '8.0<>9.0':{'lower':8.0, 'upper':9.0},
 '9.0<>10.0':{'lower':9.0, 'upper':11.0}}
 
-scoring_label = {'0.0<>1.0':0.0, '1.0<>2.0':0.0, '2.0<>3.0':0.0, 
+scoring_dict = {'0.0<>1.0':0.0, '1.0<>2.0':0.0, '2.0<>3.0':0.0, 
 '3.0<>4.0':0.0, '4.0<>5.0':0.0, '5.0<>6.0':0.0, 
 '6.0<>7.0':0.0, '7.0<>8.0':0.0, '8.0<>9.0':0.0,
 '9.0<>10.0':0.0}
@@ -64,12 +65,11 @@ for row in data_meta:
 print('length test',len(test_values),'length train',len(train_values))
 	
 classifier_index = 6
-pos_value = 5.0
-neg_value = 5.0
 cont_indexes = ['budget', 'popularity', 'revenue', 'runtime']
 cont_features = {'budget':budget_c, 'popularity':popularity_c, 'revenue':revenue_c, 'runtime':runtime_c}
 print(train_labels)
-features = trainNB(train_values, train_labels, classifier_index, scoring_feature, scoring_label, cont_indexes, cont_features)
+
+features = trainNB(train_values, train_labels, classifier_index, scoring_feature, scoring_dict, cont_indexes, cont_features)
 
 def resultClass(results, scoring_feature, actual):
 	
@@ -91,8 +91,17 @@ def resultClass(results, scoring_feature, actual):
 correct = 0
 total = len(test_values)
 
+print('testing...')
+
+gauss = False
+aveList = None
+varList = None
+if gauss:
+	aveList = gs.averagesList(train_values, train_labels, cont_indexes, classifier_index, scoring_feature, scoring_dict)
+	varList = gs.variancesList(train_values, train_labels, cont_indexes, classifier_index, scoring_feature, scoring_dict)
+
 for i in range(0, total):
-	results = classifyNB(features, test_values[i], train_labels, classifier_index, scoring_feature, scoring_label, cont_indexes, cont_features)
+	results = classifyNB(features, test_values[i], train_labels, classifier_index, scoring_feature, scoring_dict, cont_indexes, cont_features, gauss, averagesList = aveList, variancesList = varList)
 
 	add = resultClass(results, scoring_feature, float(test_values[i][classifier_index]))
 	

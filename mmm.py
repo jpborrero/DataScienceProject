@@ -8,8 +8,8 @@ from scipy import stats
 
 file_name = 'cleanedData.csv'
 column_names_retrieved = ['vote_average', 'vote_count']
-column_name_select = 'vote_count'
-filters = ['vote_count > 0']
+column_name_select = 'budget'
+filters = []
 df = pd.read_csv(file_name , usecols=column_names_retrieved)
 
 #apply filters

@@ -29,4 +29,4 @@ def makeHisto(dataFile, attrX, attrOther, filters, ranges):
 #,adult,budget,genres,id,original_language,original_title,popularity,production_companies
 #,production_countries,release_date,revenue,runtime,spoken_languages,vote_average,vote_count
 	
-makeHisto('cleanedData.csv', 'runtime', ['genres'], ['runtime >= 0'], (0,120))
+makeHisto('cleanedData.csv', 'vote_average', [], ['vote_average >= 0'], None)
