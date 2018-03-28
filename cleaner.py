@@ -10,7 +10,7 @@ metadata = pd.read_csv(file, dtype={'budget':str, 'revenue':str, 'runtime':str},
 
 
 def count_prod_comp(data):
- 	data = data.drop(['belongs_to_collection','homepage', 'imdb_id', 'overview', 'poster_path', 'status', 'tagline', 'video', 'title', 'release_date', 'spoken_languages', 'runtime', 'adult'], axis=1)
+	data = data.drop(['belongs_to_collection','homepage', 'imdb_id', 'overview', 'poster_path', 'status', 'tagline', 'video', 'title', 'release_date', 'spoken_languages', 'runtime', 'adult'], axis=1)
 	prodCompDict = {}
 	for  index, row in data.iterrows():
 		try:

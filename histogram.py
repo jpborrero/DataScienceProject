@@ -12,7 +12,7 @@ def makeHisto(dataFile, attrX, attrOther, filters, ranges):
 	#apply filters
 	df_f = df
 	for filter in filters:
-		df_f = df_f.query(filter)	
+		df_f = df_f.query(filter)
 	
 	X = df_f[attrX]
 	
