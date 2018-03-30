@@ -23,21 +23,28 @@ def newline(p1, p2):
     return l
 
 #filters apply data filters, reference pandas .query()
-def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
+def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, numFilters, catFilters):
 
 	# load csv with columns
 	columns = [attrX, attrY]
 	for attr in attrOther:
 		columns.append(attr)
-		
-	df = pd.read_csv(dataFile, usecols=columns)
 	
-
+	df = pd.read_csv(dataFile, usecols=columns)
 	
 	#apply filters
 	df_f = df
-	for filter in filters:
+	for filter in numFilters:
 		df_f = df_f.query(filter)
+	
+	for filter in catFilters:
+		feature = filter
+		attribute = catFilters[feature]
+		df_f = df_f[df_f[feature] == attribute]
+		
+	df_f = df_f.sample(frac=1)
+	
+	print("rows used:", len(df_f), "rows")
 	
 	Y = df_f[attrY]
 	X = df_f[attrX]
@@ -46,11 +53,15 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
 	Y=Y.values.reshape(len(Y),1)
 
 	#split
-	lendf = int((len(df_f.index))*(1/2))
+	split_value = 1/8
+	lendf = int((len(df_f.index))*(split_value))
 	X_train = X[:-lendf]
 	X_test = X[-lendf:]
 	Y_train = Y[:-lendf]
 	Y_test = Y[-lendf:]
+	
+	print("train used:", len(X_train), "rows")
+	print("test used:", len(Y_test), "rows")
 	
 	#plot
 	plt.scatter(X_test, Y_test, color='black', marker='.')
@@ -58,7 +69,7 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
 	p2 = [0, 10]
 	newline(p1,p2)
 	plt.suptitle(str(attrX)+' v. '+str(attrY))
-	plt.title(str(filters))
+	plt.title(str(numFilters)+str(catFilters))
 	plt.xlabel(attrX)
 	plt.ylabel(attrY)
 
@@ -66,7 +77,10 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
 	# Create linear regression 
 	regr = linear_model.LinearRegression()
 	regr.fit(X_train, Y_train)
+	print('score:', regr.score(X_test, Y_test))
 	plt.plot(X_test, regr.predict(X_test), color='red',linewidth=3)
+	
+	#plt.savefig('linReg_fig_missing_values/'+attrX+'_'+attrY+'.png')
 	
 	plt.show()
 	
@@ -80,10 +94,16 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, filters):
 #,production_countries,release_date,revenue,runtime,spoken_languages,vote_average,vote_count
 
 
-#scatterPlotTwoFeatures('cleanedData.csv', 'budget', 'revenue', ['budget>0', 'revenue>0'])
+#budget,popularity,revenue,runtime,vote_count,vote_count
 
 #first var is data file, second var is independent var, third var is dependent var, fourth is list of filters
-scatterPlotTwoFeatures('cleanedData.csv', 'budget', 'revenue', [], ['budget >= 0', 'revenue >= 0'])
+attrX = 'popularity'
+upper_bounds = 5 * 10**8
+attrY = 'vote_average'
+other = ['genres']
+numericals = [attrX+' > -1', attrY+' > -1']
+categoricals = {'genres':'Drama'}
+scatterPlotTwoFeatures('cleanedData.csv', attrX, attrY, other, numericals, categoricals)
 
 
 

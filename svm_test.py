@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestRegressor
+from sklearn import svm
 from sklearn.metrics import r2_score
 import numpy as np
 import csv
@@ -57,7 +57,7 @@ for row in data_meta:
 				break
 		if flag:
 			continue
-	
+			
 		if parter_count%parter == 0:
 			test_entry = []
 			for i in range(0, len(used_col)):
@@ -96,9 +96,9 @@ def testCleanliness(train_features, train_class, test_features, test_class):
 print("running model...")
 X= train_features
 Y= train_class
-clf = RandomForestRegressor(n_estimators = 10)
+clf = svm.SVR()
 clf = clf.fit(X, Y)
-print("most important:"+str(clf.feature_importances_))
+#print("most important:"+str(clf.feature_importances_))
 predicted = clf.predict(test_features)
 print("predicted values: "+str(len(predicted)))
 accuracy = r2_score(predicted, test_class)
