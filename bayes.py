@@ -5,6 +5,7 @@ def getScore(scoring_feature, value):
 	for category in scoring_feature:
 		if float(value) >= scoring_feature[category]['lower'] and float(value) < scoring_feature[category]['upper']:
 			return category
+	print("shouldn't be here")
 
 def trainNB(train_values, train_labels, classifier_index, scoring_feature, scoring_dict, cont_indexes, cont_features, gauss = False):
 	

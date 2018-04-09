@@ -98,11 +98,11 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, numFilters, catFil
 
 #first var is data file, second var is independent var, third var is dependent var, fourth is list of filters
 attrX = 'popularity'
-upper_bounds = 5 * 10**8
+upper_bounds = 10
 attrY = 'vote_average'
 other = ['genres']
 numericals = [attrX+' > -1', attrY+' > -1']
-categoricals = {'genres':'Drama'}
+categoricals = None#{'genres':'Drama'}
 scatterPlotTwoFeatures('cleanedData.csv', attrX, attrY, other, numericals, categoricals)
 
 

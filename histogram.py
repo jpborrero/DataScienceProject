@@ -46,10 +46,10 @@ def makeHisto(dataFile, attrX, attrOther, numFilters, catFilters, ranges, bin_nu
 #change this to the feature name you want to look at
 attrX = 'runtime'
 #change this to the upper and lower bounds of hist, otherwise ranges = None for unbounded
-ranges = (0, 200)
+ranges = (0, 10.0)
 #number of bins
-bin_num = 1000
+bin_num = 2
 other = ['genres']
 numericals = [attrX+' > -1']
-categoricals = {'genres':'Adventure'}
+categoricals = {}#'genres':'Adventure'
 makeHisto('cleanedData.csv', attrX, ['genres'], numericals, categoricals, ranges, bin_num)

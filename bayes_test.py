@@ -3,19 +3,20 @@ import gaussian as gs
 import time
 import csv
 
-#'adult', 'budget', 'original_language', 'popularity', 'revenue', 'runtime', 'vote_average'
+#0:budget,1:genres,2:movieId,3:original_language,4:original_title,5:popularity,
+#6:production_companies,7:production_countries,8:revenue,9:runtime,10:vote_average,11:vote_count
 
-budget_c = {'1<>21604277':{'lower':1.0, 'upper':21604277.0}, 
+budget_c = {'1<>21810503':{'lower':1.0, 'upper':218105023.0}, 
 '21604277<>380000000':{'lower':21604277.0, 'upper':380000000.0}}
 
-popularity_c = {'0<>2.92':{'lower':0.0, 'upper':2.92},
-'2.92<>547.49':{'lower':2.92, 'upper':547.49}}
+popularity_c = {'0<>2.92':{'lower':0.0, 'upper':16.0},
+'2.92<>547.49':{'lower':16.0, 'upper':548}}
 
 revenue_c = {'1<>68787390':{'lower':1.0, 'upper':68787390.0}, 
 '68787390<>2787965087':{'lower':68787390.0, 'upper':2787965087.0}}
 
-runtime_c = {'1<>97':{'lower':1.0, 'upper':97.0}, 
-'97<>1256':{'lower':97.0, 'upper':1256.0}}
+runtime_c = {'1<>97':{'lower':1.0, 'upper':200.0}, 
+'97<>1256':{'lower':200.0, 'upper':1256.0}}
 
 
 scoring_feature = {'0.0<>1.0':{'lower':0.0, 'upper':1.0}, '1.0<>2.0':{'lower':1.0, 'upper':2.0}, '2.0<>3.0':{'lower':2.0, 'upper':3.0}, 
@@ -30,13 +31,22 @@ scoring_dict = {'0.0<>1.0':0.0, '1.0<>2.0':0.0, '2.0<>3.0':0.0,
 
 print('getting data...')
 
-meta = open("movies_metadata.csv", "r", encoding="utf8")
+meta = open("cleanedData.csv", "r", encoding="latin 1")
 data_meta = csv.reader(meta)
 
 train_labels = []
 train_values = []
 
 test_values = []
+
+#0:budget,1:genres,2:movieId,3:original_language,4:original_title,5:popularity,
+#6:production_companies,7:production_countries,8:revenue,9:runtime,10:vote_average,11:vote_count
+
+features = [0, 1, 3, 5, 6, 7, 8, 9, 10, 11]
+num_indexes = [0, 5, 8, 9, 11]
+
+cont_indexes = ['budget', 'popularity', 'revenue', 'runtime']
+cont_features = {'budget':budget_c, 'popularity':popularity_c, 'revenue':revenue_c, 'runtime':runtime_c}
 
 print('searching data...')
 parter = 20
@@ -50,24 +60,32 @@ for row in data_meta:
 		pass
 
 	if count == 1:
-		train_labels = [row[0],row[2],row[7],row[10],row[15],row[16],row[22]]
-		#print(train_labels)
+		#train_labels = [row[0],row[2],row[7],row[10],row[15],row[16],row[22]]
+		for index in features:
+			train_labels.append(row[index])
 	else:
-		if len(row) > 22:
+		if '-1' not in row:
+			entry = []
+			for index in features:
+				if index in num_indexes:
+					entry.append(float(row[index]))
+				else:
+					entry.append(row[index])
 			if parter_count%parter == 0:
-				test_values.append([row[0],row[2],row[7],row[10],row[15],row[16],row[22]])
+				#test_values.append([row[0],row[2],row[7],row[10],row[15],row[16],row[22]])
+				test_values.append(entry)
 				parter_count+=1
 			else:
-				train_values.append([row[0],row[2],row[7],row[10],row[15],row[16],row[22]])
+				#train_values.append([row[0],row[2],row[7],row[10],row[15],row[16],row[22]])
+				train_values.append(entry)
 				parter_count+=1
 	count += 1
 
 print('length test',len(test_values),'length train',len(train_values))
 	
-classifier_index = 6
+classifier_index = 8
 cont_indexes = ['budget', 'popularity', 'revenue', 'runtime']
 cont_features = {'budget':budget_c, 'popularity':popularity_c, 'revenue':revenue_c, 'runtime':runtime_c}
-print(train_labels)
 
 features = trainNB(train_values, train_labels, classifier_index, scoring_feature, scoring_dict, cont_indexes, cont_features)
 
