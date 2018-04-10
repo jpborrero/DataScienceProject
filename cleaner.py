@@ -2,6 +2,7 @@
 from __future__ import division
 import pandas as pd
 import numpy as np
+import os
 import json
 import ast
 import csv
@@ -180,6 +181,8 @@ def fill_empty_cells():
 
             if row['vote_count'] != 0 or row['vote_average'] != 0:  #WE DONT WANT MOVIES WITH NO RATINGS WHATSOEVER
                 writer.writerow({'budget':new_row['budget'], 'genres':new_row['genres'], 'movieId':new_row['movieId'], 'original_language':new_row['original_language'], 'original_title':new_row['original_title'], 'popularity':new_row['popularity'], 'production_companies':new_row['production_companies'], 'production_countries':new_row['production_countries'], 'revenue':new_row['revenue'], 'runtime':new_row['runtime'], 'vote_average':new_row['vote_average'], 'vote_count':new_row['vote_count']})
+
+    os.remove('cleanedData.csv')
 
 prodCompDict = count_prod_comp(data)
 prodCountryDict = count_prod_country(data)
