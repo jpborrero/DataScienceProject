@@ -18,7 +18,7 @@ def get_average(col):
     average = 0
     sum = 0
     count = 0
-    with open('cleanedData.csv', 'rb') as csvfile:
+    with open('tempData.csv', 'rb') as csvfile:
         reader = csv.DictReader(csvfile) # pass the file to our csv reader
         for row in reader:     # iterate over the rows in the file
             if row[col] != '-1':
@@ -68,7 +68,7 @@ def count_prod_country(data):
 
 #CLEANING FUNCTION
 def clean_movie_data(data, prodCompDict, prodCountryDict):
-    with open('cleanedData.csv', 'w') as csvfile:
+    with open('tempData.csv', 'w') as csvfile:
         fieldnames = ['budget', 'genres', 'movieId', 'original_language', 'original_title','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_average', 'vote_count']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -163,7 +163,7 @@ def fill_empty_cells():
     averagePop = get_average('popularity')
     averageRevenue = get_average('revenue')
     averageRuntime = get_average('runtime')
-    with open('cleanedData.csv', 'rb') as infile, open('finalData.csv', 'wb') as outfile:
+    with open('tempData.csv', 'rb') as infile, open('cleanedData.csv', 'wb') as outfile:
         reader = csv.DictReader(infile)
         fieldnames = ['budget', 'genres', 'movieId', 'original_language', 'original_title','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_average', 'vote_count']
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
@@ -182,7 +182,7 @@ def fill_empty_cells():
             if row['vote_count'] != 0 or row['vote_average'] != 0:  #WE DONT WANT MOVIES WITH NO RATINGS WHATSOEVER
                 writer.writerow({'budget':new_row['budget'], 'genres':new_row['genres'], 'movieId':new_row['movieId'], 'original_language':new_row['original_language'], 'original_title':new_row['original_title'], 'popularity':new_row['popularity'], 'production_companies':new_row['production_companies'], 'production_countries':new_row['production_countries'], 'revenue':new_row['revenue'], 'runtime':new_row['runtime'], 'vote_average':new_row['vote_average'], 'vote_count':new_row['vote_count']})
 
-    os.remove('cleanedData.csv')
+    os.remove('tempData.csv')
 
 prodCompDict = count_prod_comp(data)
 prodCountryDict = count_prod_country(data)
