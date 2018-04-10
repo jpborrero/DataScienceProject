@@ -2,19 +2,23 @@
 
 # Extra Trees Classification
 import pandas as pd
+import numpy as np
 from sklearn import model_selection
 from sklearn.ensemble import ExtraTreesClassifier
 
-file = 'cleanedData.csv'
+file = 'cleanedData2.csv'
 #names = ['budget','popularity', 'revenue', 'runtime', 'vote_average', 'vote_count']
-names = ['budget', 'genres', 'original_language','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_average', 'vote_count'] #movie id and original title not here
+names = ['budget', 'genres', 'original_language','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_count', 'vote_average'] #movie id and original title not here
 dataframe = pd.read_csv(file, names=names)
 array = dataframe.values
-X = array[:,0:10]
-Y = array[:10]
-seed = 7
+X = array[:,0:9]
+X = np.asarray(X)
+Y = array[:9]
+print X.shape
+X = X.reshape(45460, 9)
+seed = 8
 num_trees = 100
-max_features = 7
+max_features = 8
 kfold = model_selection.KFold(n_splits=10, random_state=seed)
 model = ExtraTreesClassifier(n_estimators=num_trees, max_features=max_features)
 results = model_selection.cross_val_score(model, X, Y, cv=kfold)
