@@ -19,52 +19,45 @@ def get_average(col):
     sum = 0
     count = 0
     with open('tempData.csv', 'rb') as csvfile:
-        reader = csv.DictReader(csvfile) # pass the file to our csv reader
-        for row in reader:     # iterate over the rows in the file
+        reader = csv.DictReader(csvfile)
+        for row in reader:
             if row[col] != '-1':
                 sum += float(row[col])
                 count += 1
-
     average = sum/count
     return average
 
-#CREATE PRODUCTION COMPANIES DICTIONARY
-def count_prod_comp(data):
-	prodCompDict = {}
+#CREATE DICTIONARY WITH COUNT FOR PRODUCTION COMPANY OR PRODUCTION COUNTRY
+def get_dictionary(data, col):
+	Dict = {}
 	for  index, row in data.iterrows():
 		try:
-			prodCompStr = unicode(row['production_companies'], errors='ignore')   #PRODUCTION COMPANY IS IN JSON FORMAT
-			jsonStr = ast.literal_eval(prodCompStr)
+			Str = unicode(row[col], errors='ignore')   #PRODUCTION COMPANY IS IN JSON FORMAT
+			jsonStr = ast.literal_eval(Str)
 			json_data = json.dumps(jsonStr)
-			prodComp = json.loads(json_data)
-			if prodComp != []:
-				if prodComp[0]['name'] in prodCompDict:
-					prodCompDict[prodComp[0]['name']] += 1
+			val = json.loads(json_data)
+			if val != []:
+				if val[0]['name'] in Dict:
+					Dict[val[0]['name']] += 1
 				else:
-					prodCompDict[prodComp[0]['name']] = 1
+					Dict[val[0]['name']] = 1
 		except:
 			continue
+	return Dict
 
-	return prodCompDict
-
-#CREATE PRODUCTION COUNTRIES DICTIONARY
-def count_prod_country(data):
-	prodCountryDict = {}
-	for  index, row in data.iterrows():
-		try:
-			prodCountryStr = unicode(row['production_countries'], errors='ignore')   #PRODUCTION COMPANY IS IN JSON FORMAT
-			jsonStr = ast.literal_eval(prodCountryStr)
-			json_data = json.dumps(jsonStr)
-			prodCountry = json.loads(json_data)
-			if prodCountry != []:
-				if prodCountry[0]['name'] in prodCountryDict:
-					prodCountryDict[prodCountry[0]['name']] += 1
-				else:
-					prodCountryDict[prodCountry[0]['name']] = 1
-		except:
-			continue
-
-	return prodCountryDict
+# CREATE ID DICTIONARY FOR GENRE, ORIGINAL LANGUAGE, PRODUCTION COUNTRY OR PRODUCTION COMPANY
+def get_id_dictionary(col):
+    Dict = {}
+    id = 1
+    with open('tempData2.csv', 'rb') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row[col] in Dict:
+                continue
+            else:
+                Dict[row[col]] = id
+                id += 1
+	return Dict
 
 #CLEANING FUNCTION
 def clean_movie_data(data, prodCompDict, prodCountryDict):
@@ -157,7 +150,7 @@ def clean_movie_data(data, prodCompDict, prodCountryDict):
 
             writer.writerow({'budget':row['budget'], 'genres':row['genres'], 'movieId':row['movieId'], 'original_language':row['original_language'], 'original_title':row['original_title'], 'popularity':row['popularity'], 'production_companies':row['production_companies'], 'production_countries':row['production_countries'], 'revenue':row['revenue'], 'runtime':row['runtime'], 'vote_average':row['vote_average'], 'vote_count':row['vote_count']})
 
-# REPLACE EMPTY VALUES WITH AVERAGES AND SAVE FILE
+# REPLACE EMPTY VALUES WITH AVERAGES, CLEAN AND SAVE FILE
 def fill_empty_cells():
     averageBudget = get_average('budget')
     averagePop = get_average('popularity')
@@ -168,8 +161,8 @@ def fill_empty_cells():
         fieldnames = ['budget', 'genres', 'movieId', 'original_language', 'original_title','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_average', 'vote_count']
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
-        for row in reader:     # iterate over the rows in the file
-            new_row = row      # at first, just copy the row
+        for row in reader:
+            new_row = row
             if row['budget'] == '-1':
                 new_row['budget'] = averageBudget
             if row['popularity'] == '-1':
@@ -179,12 +172,42 @@ def fill_empty_cells():
             if row['runtime'] == '-1':
                 new_row['runtime'] = averageRuntime
 
-            if row['vote_count'] != 0 or row['vote_average'] != 0:  #WE DONT WANT MOVIES WITH NO RATINGS WHATSOEVER
+            if new_row['vote_count'] != 0 or new_row['vote_average'] != 0:  #WE DONT WANT MOVIES WITH NO RATINGS WHATSOEVER
                 writer.writerow({'budget':new_row['budget'], 'genres':new_row['genres'], 'movieId':new_row['movieId'], 'original_language':new_row['original_language'], 'original_title':new_row['original_title'], 'popularity':new_row['popularity'], 'production_companies':new_row['production_companies'], 'production_countries':new_row['production_countries'], 'revenue':new_row['revenue'], 'runtime':new_row['runtime'], 'vote_average':new_row['vote_average'], 'vote_count':new_row['vote_count']})
 
     os.remove('tempData.csv')
 
-prodCompDict = count_prod_comp(data)
-prodCountryDict = count_prod_country(data)
+def discrete_data(prodCompDict, prodCountryDict, genreDict, originalLanDict):
+    # DICTIONARY for each, then puth value
+    with open('cleanedData.csv', 'rb') as infile, open('cleanedData2.csv', 'wb') as outfile:
+        reader = csv.DictReader(infile)
+        # did not include header, movieid and original_title
+        fieldnames = ['budget', 'genres', 'original_language','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_count', 'vote_average']
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+        #writer.writeheader()
+        for row in reader:
+            new_row = row
+            new_row['genres'] = genreDict[row['genres']]
+            new_row['original_language'] = originalLanDict[row['original_language']]
+            new_row['production_countries'] = prodCountryDict[row['production_countries']]
+            new_row['production_companies'] = prodCompDict[row['production_companies']]
+
+            if new_row['vote_count'] != 0 or new_row['vote_average'] != 0:  #WE DONT WANT MOVIES WITH NO RATINGS WHATSOEVER
+                # no movie title or id
+                writer.writerow({'budget':new_row['budget'], 'genres':new_row['genres'], 'original_language':new_row['original_language'], 'popularity':new_row['popularity'], 'production_companies':new_row['production_companies'], 'production_countries':new_row['production_countries'], 'revenue':new_row['revenue'], 'runtime':new_row['runtime'], 'vote_count':new_row['vote_count'], 'vote_average':new_row['vote_average']})
+
+    #os.remove('tempData2.csv')
+
+
+
+prodCompDict = get_dictionary(data, 'production_companies')
+prodCountryDict = get_dictionary(data, 'production_countries')
+
 clean_movie_data(data, prodCompDict, prodCountryDict)
 fill_empty_cells()
+
+genreIdDict = get_id_dictionary('genres')
+originalLanIdDict = get_id_dictionary('original_language')
+prodCompIdDict = get_id_dictionary('production_companies')
+prodCountryIdDict = get_id_dictionary('production_countries')
+discrete_data(prodCompIdDict, prodCountryIdDict, genreIdDict, originalLanIdDict)
