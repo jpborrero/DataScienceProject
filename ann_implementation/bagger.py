@@ -1,4 +1,5 @@
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import HashingVectorizer
 import pandas as pd
 import time
 
@@ -13,7 +14,12 @@ def vectorizeDoc(full_doc):
 	vectorizer = CountVectorizer()
 	vectorizer.fit(full_doc)
 	return vectorizer
-	
+
+def hashDoc(full_doc):
+	vectorizer = HashingVectorizer(n_features = 20)
+	vectorizer.fit(full_doc)
+	return vectorizer
+
 def getVectors(full_doc, vectorizer):
 	vector = vectorizer.transform(full_doc)
 	return vector.toarray()

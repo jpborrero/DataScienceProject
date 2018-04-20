@@ -53,7 +53,7 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, numFilters, catFil
 	Y=Y.values.reshape(len(Y),1)
 
 	#split
-	split_value = 1/8
+	split_value = 1/10
 	lendf = int((len(df_f.index))*(split_value))
 	X_train = X[:-lendf]
 	X_test = X[-lendf:]
@@ -77,12 +77,14 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, numFilters, catFil
 	# Create linear regression 
 	regr = linear_model.LinearRegression()
 	regr.fit(X_train, Y_train)
-	print('score:', regr.score(X_test, Y_test))
-	plt.plot(X_test, regr.predict(X_test), color='red',linewidth=3)
+	score = regr.score(X_test, Y_test)
+	print('score:', score)
+	return score
+	#plt.plot(X_test, regr.predict(X_test), color='red',linewidth=3)
 	
 	#plt.savefig('linReg_fig_missing_values/'+attrX+'_'+attrY+'.png')
 	
-	plt.show()
+	#plt.show()
 	
 	#make prediction with model
 	#print( str(round(regr.predict(3.7*(10^8)))))
@@ -97,14 +99,18 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, numFilters, catFil
 #budget,popularity,revenue,runtime,vote_count,vote_count
 
 #first var is data file, second var is independent var, third var is dependent var, fourth is list of filters
-attrX = 'popularity'
+attrX = 'runtime'
 upper_bounds = 10
 attrY = 'vote_average'
 other = ['genres']
 numericals = [attrX+' > -1', attrY+' > -1']
-categoricals = None#{'genres':'Drama'}
-scatterPlotTwoFeatures('cleanedData.csv', attrX, attrY, other, numericals, categoricals)
+categoricals = {}#{'genres':'Drama'}
 
+score = 0
+for i in range(0, 100):
+	print(i)
+	score = score + scatterPlotTwoFeatures('cleanedData.csv', attrX, attrY, other, numericals, categoricals)
+print(score/100)
 
 
 
