@@ -28,6 +28,16 @@ def JSONParser(data):
 	j1 = json.loads(data)
 	return j1
 	
+def alternateJSONParser(data):
+	if data == '[]' or data == '' or data == 'False':
+		return -1
+	
+	#print(data)
+	data = re.sub(r'\'name\': .*, ', '', data)
+	data = data.replace('\'', '"')
+	j1 = json.loads(data)
+	return j1
+	
 def getPrimary(data):
 	pass
 

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from extraparsers import BinParser, JSONParser
 
-discretized = True
+discretized = False
 
 meta_filen = "movies_metadata.csv"
 

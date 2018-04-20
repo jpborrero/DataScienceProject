@@ -44,11 +44,11 @@ def makeHisto(dataFile, attrX, attrOther, numFilters, catFilters, ranges, bin_nu
 
 #PAY ATTENTION TO THESE COMMENTS
 #change this to the feature name you want to look at
-attrX = 'runtime'
+attrX = 'popularity'
 #change this to the upper and lower bounds of hist, otherwise ranges = None for unbounded
-ranges = (0, 10.0)
+ranges = (0, 500)
 #number of bins
-bin_num = 2
+bin_num = 20
 other = ['genres']
 numericals = [attrX+' > -1']
 categoricals = {}#'genres':'Adventure'
