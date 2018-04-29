@@ -7,7 +7,7 @@ from scipy import stats
 #,production_countries,release_date,revenue,runtime,spoken_languages,vote_average,vote_count
 
 file_name = 'cleanedData.csv'
-column_name_select = 'runtime'
+column_name_select = 'popularity'
 column_names_retrieved = [column_name_select]
 filters = [column_name_select+' > -1']
 df = pd.read_csv(file_name , usecols=column_names_retrieved)

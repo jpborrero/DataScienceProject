@@ -5,7 +5,7 @@ import pandas as pd
 
 file_name = "cleanedData.csv"
 
-labelOne = 'popularity'
+labelOne = 'revenue'
 labelTwo = 'runtime'
 classDet = 'vote_average'
 classPar = 6.0
