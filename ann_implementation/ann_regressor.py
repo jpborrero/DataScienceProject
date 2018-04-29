@@ -1,15 +1,13 @@
-from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score
+from sklearn.metrics import r2_score
 import pandas as pd
 import numpy as np
 
 import bagger as bg
 
-meta_filen = "merged_metakey_discBin4.csv"
+meta_filen = "merged_metakey.csv"
 
 cols=['genres', 'keywords']
 f_cols = ['genres', 'keywords']
@@ -43,7 +41,7 @@ x = np.array(x_temp)
 
 full_doc_genres = bg.getDoc(x_data, 'genres')
 full_doc_keywords = bg.getDoc(x_data, 'keywords')
-vectorizer1 = bg.hashDoc(full_doc_genres)
+vectorizer1 = bg.vectorizeDoc(full_doc_genres)
 vectorizer2 = bg.hashDoc(full_doc_keywords)
 x1 = bg.getVectors(full_doc_genres, vectorizer1)
 x2 = bg.getVectors(full_doc_keywords, vectorizer2)
@@ -53,30 +51,36 @@ for i in range(len(x1)):
 	new_row = np.append(x1[i], x2[i])
 	x.append(new_row)
 x = np.array(x)
-	
+
 print("beginning testing...")
 
-total = 10
 
-skf = StratifiedKFold(n_splits=total)
-
-stotal = np.array([])
-ftotal = np.array([])
+x_train, x_test, y_train, y_test = train_test_split(x, y)
 
 
-for train_index, test_index in skf.split(x, y):
-	x_train, x_test = x[train_index], x[test_index]
-	y_train, y_test = y[train_index], y[test_index]
-	clf = MLPClassifier(activation="tanh", solver='lbfgs', learning_rate='constant', hidden_layer_sizes=(80, 50, 10))
-	clf.fit(x_train, y_train)
+active = "tanh"
+solve = 'lbfgs'
+learning_r = 'constant'
+layer_size=(80, 50, 10)
+
+print("running model "+str(layer_size)+"...")
+clf = MLPRegressor(activation=active, solver=solve, learning_rate=learning_r, hidden_layer_sizes=layer_size, random_state=1)
+clf = clf.fit(x_train, y_train)
+predicted = clf.predict(x_test)
+accuracy = r2_score(predicted, y_test)
+print("R2 : "+str(accuracy))
+
+'''
+
+layer_sizes = [(5, 3, 1), (10, 5, 3), (20, 10, 5), (50, 20, 10), (100, 50, 20)]
+
+for layer_size in layer_sizes:
+
+	print("running model "+str(layer_size)+"...")
+	clf = MLPRegressor(activation=active, solver=solve, learning_rate=learning_r, hidden_layer_sizes=layer_size, random_state=1)
+	clf = clf.fit(x_train, y_train)
 	predicted = clf.predict(x_test)
-	score = accuracy_score(y_test, predicted)
-	print(score)
-	stotal = np.append(stotal, score)
-	fscore = f1_score(y_test, predicted, average='weighted')
-	ftotal = np.append(ftotal, fscore)
-	
+	accuracy = r2_score(predicted, y_test)
+	print("R2 : "+str(accuracy))
 
-print("Average Accuracy: ", stotal.mean(), "(+/-", stotal.std() * 2, ')')
-print("Average Error: ", 1-stotal.mean(), "(+/-", stotal.std() * 2, ')')
-print("Average F-Measure: ", ftotal.mean(), "(+/-", ftotal.std() * 2, ')')
+'''

@@ -63,13 +63,25 @@ skf = StratifiedKFold(n_splits=total)
 stotal = np.array([])
 ftotal = np.array([])
 
+classOneX = []
+classOneY = []
+
+classTwoX = []
+classTwoY = []
 
 for train_index, test_index in skf.split(x, y):
 	x_train, x_test = x[train_index], x[test_index]
 	y_train, y_test = y[train_index], y[test_index]
-	clf = MLPClassifier(activation="tanh", solver='lbfgs', learning_rate='constant', hidden_layer_sizes=(80, 50, 10))
+	clf = MLPClassifier(activation="tanh", solver='lbfgs', learning_rate='constant', hidden_layer_sizes=(5, 1))
 	clf.fit(x_train, y_train)
 	predicted = clf.predict(x_test)
+	print(predicted)
+	
+	for cat in predicted:
+		if cat == '<2.5>':
+			classOneX.append(row[labelOne])
+			classOneY.append(row[labelTwo])
+	
 	score = accuracy_score(y_test, predicted)
 	print(score)
 	stotal = np.append(stotal, score)
