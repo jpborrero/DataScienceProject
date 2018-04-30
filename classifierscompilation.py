@@ -41,7 +41,12 @@ models.append(('MLP', MLPClassifier()))
 
 # EVALUATE MODELS
 def evaluate(models):
-    with open('accuracyMetrics.csv', 'w') as accuracy_file, open('f1scoreMetrics.csv', 'w') as f1score_file, open('timeMetrics.csv', 'w') as time_file:
+    restriction = input("Evaluate restricted data (vote count > 10)? Yes=1, No=0: ")
+    res = ''
+    if restriction == 1:
+        res ='Res'
+
+    with open('accuracyMetrics'+res+'.csv', 'w') as accuracy_file, open('f1scoreMetrics'+res+'.csv', 'w') as f1score_file, open('timeMetrics'+res+'.csv', 'w') as time_file:
         fieldnames = ['BINS', 'LR', 'LDA', 'PER', 'SGD','KNN', 'DT', 'RF', 'EXT', 'ADA', 'BAG', 'BNB','GNB','MLP']
         accuracyWriter = csv.DictWriter(accuracy_file, fieldnames=fieldnames)
         f1scoreWriter = csv.DictWriter(f1score_file, fieldnames=fieldnames)
@@ -50,8 +55,7 @@ def evaluate(models):
         f1scoreWriter.writeheader()
         timeWriter.writeheader()
         for k in range (2,11):
-            in_file = 'discreteData'+str(k)+'bins.csv'
-            names = ['budget', 'genres', 'original_language','popularity', 'production_companies', 'production_countries', 'revenue', 'runtime', 'vote_count', 'vote_average'] #movie id and original title not here
+            in_file = 'discreteData'+str(k)+'bins'+res+'.csv'
             X_train = pd.read_csv(in_file, header=None, usecols=[0,1,2,3,4,5,6,7,8])
             X_train = X_train.as_matrix()
             Y_train = pd.read_csv(in_file, header=None, usecols=[9])

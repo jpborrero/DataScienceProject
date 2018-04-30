@@ -254,8 +254,6 @@ def discrete_data_headers(k,restriction):
 #------------------------
 def main(data):
     restriction = input("Restriction vote count greater than 10? Yes=1, No=0: ")
-    print restriction
-    print type(restriction)
     if os.path.isfile('OnlyFloatsData.csv') == True:
         # Discretize data, create bins for vote average
         for bins in range(2,11):
