@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import csv
 from sklearn import model_selection
+import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_validate
 from sklearn.linear_model import SGDClassifier
 from sklearn.linear_model import Perceptron
@@ -12,7 +13,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -71,6 +71,10 @@ def evaluate(models):
             for name, model in models:
                 kfold = model_selection.KFold(n_splits=10)#, random_state=seed)
                 cv_results = model_selection.cross_validate(model, X_train, Y_train, cv=kfold, scoring=scoring)
+                # CHECK BEST FEATURE FOR FOREST OF TREES
+                if name == 'RF' or name == 'DT' or name == 'EXT':
+                    key_features(model,X_train,Y_train)
+
                 accuracyResults.append(cv_results['test_accuracy'].mean())
                 f1scoreResults.append(cv_results['test_f1_weighted'].mean())
                 timeResults.append(cv_results['fit_time'].mean())
@@ -81,6 +85,25 @@ def evaluate(models):
             f1scoreWriter.writerow({'BINS':k, 'LR':f1scoreResults[0], 'LDA':f1scoreResults[1], 'PER':f1scoreResults[2], 'SGD':f1scoreResults[3],'KNN':f1scoreResults[4], 'DT':f1scoreResults[5], 'RF':f1scoreResults[6], 'EXT':f1scoreResults[7], 'ADA':f1scoreResults[8], 'BAG':f1scoreResults[9], 'BNB':f1scoreResults[10],'GNB':f1scoreResults[11],'MLP':f1scoreResults[12]})
             timeWriter.writerow({'BINS':k, 'LR':timeResults[0], 'LDA':timeResults[1], 'PER':timeResults[2], 'SGD':timeResults[3],'KNN':timeResults[4], 'DT':timeResults[5], 'RF':timeResults[6], 'EXT':timeResults[7], 'ADA':timeResults[8], 'BAG':timeResults[9], 'BNB':timeResults[10],'GNB':timeResults[11],'MLP':timeResults[12]})
 
-evaluate(models)
 
-# SAVE RESULTS IN A FILE TO LATER DISPLAY USING MATHPLOT LIB
+# FIND FEATURE IMPORTANCES
+def key_features(model, X_train, Y_train):
+    model.fit(X_train,Y_train)
+    importances = model.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in model.estimators_],axis=0)
+    indices = np.argsort(importances)[::-1]
+    # Print the feature ranking
+    print("Feature ranking:")
+    for f in range(X_train.shape[1]):
+        print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+
+    # Plot the feature importances of the forest
+    plt.figure()
+    plt.title("Feature importances")
+    plt.bar(range(X_train.shape[1]), importances[indices],
+           color="r", yerr=std[indices], align="center")
+    plt.xticks(range(X_train.shape[1]), indices)
+    plt.xlim([-1, X_train.shape[1]])
+    plt.show()
+
+evaluate(models)
