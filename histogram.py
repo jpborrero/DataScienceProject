@@ -43,7 +43,7 @@ attrX = 'budget'
 #change this to the upper and lower bounds of hist, otherwise ranges = None for unbounded
 ranges = None #set a tuple with two integer values, both none negative with first less than second, example (0, 500)
 #number of bins
-bin_num = 10
+bin_num = 20
 other = ['genres']
 numericals = [attrX+' > -1']
 categoricals = {}

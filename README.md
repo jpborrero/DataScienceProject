@@ -19,6 +19,7 @@ https://www.kaggle.com/rounakbanik/the-movies-dataset
 Some of the scripts require different versions of Python to be run.
 The Python version is specified in each instance.
 
+
 #Histograms
 
 Python Version 3.6.4
@@ -49,6 +50,7 @@ This variable can be found on line 100, viable features include:
 
 Optionally change 'attrY' dependent variable on line 103 to any of the above features to modify linear regression.
 
+
 #Mean, Median, Mode
 
 Python Version 3.6.4
@@ -60,7 +62,8 @@ The script may be readily run with the command:
 In order to generate seperate linear regression instances, modify the 'attrX' independent variable at the bottom of the file.
 This variable can be found on line 8, viable features include: 
 	budget, popularity, revenue, runtime, vote_count, vote_average
-	
+
+
 #Preliminary Clustering
 
 Python Version 3.6.4
@@ -89,3 +92,21 @@ The script may be readily run with the command:
 In order to generate results on different bin numbers, modify the variable 'bin_num' at the top of the file.
 This variable can be found on line 20, viable values include: 
 	2, 3, 4, 5, 10
+
+
+#SVM Classifier Experiment
+
+Python Version 2.7.13
+
+In order to reproduce the SVM experiment results generated in the project, please see the file 'svm_classifier.py'.
+The script may be readily run with the command:
+	python svm_classifier.py
+	
+
+#Classifiers Comparison
+
+Python Version 2.7.13
+
+In order to reproduce the Classifiers comparison  results generated in the project, please see the file 'classifierscompilation.py'.
+The script may be readily run with the command:
+	python classifierscompilation.py
