@@ -79,42 +79,36 @@ def scatterPlotTwoFeatures(dataFile, attrX, attrY, attrOther, numFilters, catFil
 	regr.fit(X_train, Y_train)
 	score = regr.score(X_test, Y_test)
 	print('score:', score)
-	return score
-	#plt.plot(X_test, regr.predict(X_test), color='red',linewidth=3)
+	plt.plot(X_test, regr.predict(X_test), color='red',linewidth=3)
 	
+	#optionally save graph immediately using line below, uncomment
 	#plt.savefig('linReg_fig_missing_values/'+attrX+'_'+attrY+'.png')
 	
-	#plt.show()
-	
-	#make prediction with model
-	#print( str(round(regr.predict(3.7*(10^8)))))
+	plt.show()
 	
 	
-
-#list of vars
-#,adult,budget,genres,id,original_language,original_title,popularity,production_companies
-#,production_countries,release_date,revenue,runtime,spoken_languages,vote_average,vote_count
-
-
-#budget,popularity,revenue,runtime,vote_count,vote_count
+	
+#viable features to use with linear regression below
+#budget,popularity,revenue,runtime,vote_count,vote_average
 
 #first var is data file, second var is independent var, third var is dependent var, fourth is list of filters
-attrX = 'runtime'
-upper_bounds = 10
+
+
+
+
+##MODIFY 'attrX' TO CHANGE INDEPENDT VARIABLE OF LINEAR REGRESSION
+attrX = 'budget'
+##################################################################
+##MODIFY 'attrX' TO CHANGE INDEPENDT VARIABLE OF LINEAR REGRESSION
 attrY = 'vote_average'
+##################################################################
+
+
+upper_bounds = 10
 other = ['genres']
 numericals = [attrX+' > -1', attrY+' > -1']
-categoricals = {}#{'genres':'Drama'}
-
-score = 0
-for i in range(0, 100):
-	print(i)
-	score = score + scatterPlotTwoFeatures('cleanedData.csv', attrX, attrY, other, numericals, categoricals)
-print(score/100)
-
-
-
-
+categoricals = {}
+scatterPlotTwoFeatures('cleanedData.csv', attrX, attrY, other, numericals, categoricals)
 
 
 

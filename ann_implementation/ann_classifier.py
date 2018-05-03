@@ -1,15 +1,26 @@
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import r2_score
+from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 import pandas as pd
 import numpy as np
+import math
+import random
+
+import matplotlib.pyplot as plt
 
 import bagger as bg
 
-meta_filen = "merged_metakey_discBin4.csv"
+
+##MODIFY THIS VARIABLE
+binNum = 4
+######################
+
+meta_filen = "merged_metakey_discBin"+str(binNum)+".csv"
 
 cols=['genres', 'keywords']
 f_cols = ['genres', 'keywords']
@@ -18,27 +29,6 @@ c_cols = ['vote_average']
 x_data = pd.read_csv(meta_filen, usecols=f_cols)
 y = pd.read_csv(meta_filen, usecols=c_cols)
 y = np.ravel(y.as_matrix())
-
-'''
-budget = x_data['budget'].as_matrix()
-revenue = x_data['revenue'].as_matrix()
-popularity = x_data['popularity'].as_matrix()
-'''
-'''
-full_doc = bg.getDoc(x_data, 'genres')
-vectorizer = bg.vectorizeDoc(full_doc)
-text = bg.getVectors(full_doc, vectorizer)
-'''
-'''
-x_temp = []
-for i in range(len(text)):
-	new_row = text[i]
-	new_row = np.append(new_row, budget[i])
-	new_row = np.append(new_row, revenue[i])
-	new_row = np.append(new_row, popularity[i])
-	x_temp.append(new_row)
-x = np.array(x_temp)
-'''
 
 
 full_doc_genres = bg.getDoc(x_data, 'genres')
@@ -67,9 +57,10 @@ ftotal = np.array([])
 for train_index, test_index in skf.split(x, y):
 	x_train, x_test = x[train_index], x[test_index]
 	y_train, y_test = y[train_index], y[test_index]
-	clf = MLPClassifier(activation="tanh", solver='lbfgs', learning_rate='constant', hidden_layer_sizes=(80, 50, 10))
+	clf = MLPClassifier(activation="tanh", solver='lbfgs', learning_rate='constant', hidden_layer_sizes=(20, 10))
 	clf.fit(x_train, y_train)
 	predicted = clf.predict(x_test)
+		
 	score = accuracy_score(y_test, predicted)
 	print(score)
 	stotal = np.append(stotal, score)

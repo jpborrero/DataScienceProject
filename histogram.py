@@ -28,28 +28,23 @@ def makeHisto(dataFile, attrX, attrOther, numFilters, catFilters, ranges, bin_nu
 	else:
 		X.plot.hist(range=ranges, alpha=0.5, bins=bin_num)
 
-	"""
-	if ranges is None:
-		plt.savefig('histogram_fig_missing_values/'+attrX+'-unbound.png')
-	else:
-		plt.savefig('histogram_fig_missing_values/'+attrX+'-bounds_'+str(ranges[0])+'_'+str(ranges[1])+'-bins_'+str(bin_num)+'.png')
-	"""
 	plt.show()
 	
-#list of vars
-#,adult,budget,genres,id,original_language,original_title,popularity,production_companies
-#,production_countries,release_date,revenue,runtime,spoken_languages,vote_count,vote_count
-
+#viable features to use with linear regression below
 #budget, popularity,revenue,runtime,vote_count,vote_count
 
-#PAY ATTENTION TO THESE COMMENTS
-#change this to the feature name you want to look at
-attrX = 'popularity'
+
+
+
+##MODIFY 'attrX' TO CHANGE INDEPENDT VARIABLE OF LINEAR REGRESSION
+attrX = 'budget'
+##################################################################
+
 #change this to the upper and lower bounds of hist, otherwise ranges = None for unbounded
-ranges = (0, 500)
+ranges = None #set a tuple with two integer values, both none negative with first less than second, example (0, 500)
 #number of bins
-bin_num = 20
+bin_num = 10
 other = ['genres']
 numericals = [attrX+' > -1']
-categoricals = {}#'genres':'Adventure'
+categoricals = {}
 makeHisto('cleanedData.csv', attrX, ['genres'], numericals, categoricals, ranges, bin_num)
