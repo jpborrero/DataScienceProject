@@ -65,9 +65,9 @@ This variable can be found on line 8, viable features include:
 
 Python Version 3.6.4
 
-In order to reproduce the cluster generated in the project, please see the file 'basicClustering.py'.
+In order to reproduce the cluster generated in the project, please see the file 'basicCluster.py'.
 The script may be readily run with the command: 
-	python basicClustering.py
+	python basicCluster.py
 	
 In order to generate seperate clusters of instances, modify the 'labelOne' and 'labelTwo' independent variables at the top of the file.
 This variable can be found on line 9 and 10, viable features include: 
